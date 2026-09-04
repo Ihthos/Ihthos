@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from collections import defaultdict
@@ -17,6 +18,7 @@ USERNAME = "Ihthos"
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data" / "contributions.json"
 CONTRIBUTIONS_URL = f"https://github.com/users/{USERNAME}/contributions"
+API_URL = "https://api.github.com"
 PALETTE = ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353", "#69f0a0"]
 
 
@@ -85,7 +87,55 @@ def fetch_data() -> dict[str, object]:
         run = run + 1 if int(day["count"]) > 0 else 0
         longest = max(longest, run)
 
-    return {"username": USERNAME, "source": CONTRIBUTIONS_URL, "fetched_at": date.today().isoformat(), "total": total, "current_streak": current, "longest_streak": longest, "monthly": dict(sorted(monthly.items())), "days": [{"date": day["date"], "count": day["count"], "level": day["level"]} for day in days]}
+    return {"username": USERNAME, "source": CONTRIBUTIONS_URL, "fetched_at": date.today().isoformat(), "total": total, "current_streak": current, "longest_streak": longest, "monthly": dict(sorted(monthly.items())), "days": [{"date": day["date"], "count": day["count"], "level": day["level"]} for day in days], "profile": fetch_profile_stats()}
+
+
+def fetch_profile_stats() -> dict[str, int]:
+    """Fetch the public profile counts used by the dashboard card."""
+    headers = {"Accept": "application/vnd.github+json"}
+    token = os.environ.get("GITHUB_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+
+    def get_json(path: str) -> object:
+        request = Request(f"{API_URL}{path}", headers={**headers, "User-Agent": "Ihthos-profile-readme/1.0"})
+        with urlopen(request, timeout=30) as response:
+            return json.loads(response.read().decode("utf-8"))
+
+    profile = get_json(f"/users/{USERNAME}")
+    repositories = get_json(f"/users/{USERNAME}/repos?per_page=100&type=owner&sort=updated")
+    if not isinstance(profile, dict) or not isinstance(repositories, list):
+        raise RuntimeError("GitHub API returned an unexpected profile response")
+
+    return {
+        "public_repos": int(profile.get("public_repos", 0)),
+        "stars": sum(int(repo.get("stargazers_count", 0)) for repo in repositories if isinstance(repo, dict)),
+        "followers": int(profile.get("followers", 0)),
+        "following": int(profile.get("following", 0)),
+    }
+
+
+def write_stats_card(payload: dict[str, object]) -> None:
+    stats = payload.get("profile")
+    if not isinstance(stats, dict):
+        raise RuntimeError("Missing profile statistics; refusing to render an incomplete card")
+    items = [("Repositories", "public_repos"), ("Stars", "stars"), ("Followers", "followers"), ("Following", "following")]
+    cards = []
+    for index, (label, key) in enumerate(items):
+        x = 22 + index * 197
+        value = escape(f"{int(stats[key]):,}")
+        cards.append(f'''<g transform="translate({x} 54)"><rect class="stat" width="178" height="92" rx="12"/><text x="18" y="35" class="number">{value}</text><text x="18" y="63" class="label">{escape(label)}</text></g>''')
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="820" height="170" viewBox="0 0 820 170" role="img" aria-labelledby="title desc">
+  <title id="title">GitHub statistics for {USERNAME}</title><desc id="desc">Public repository, star, follower, and following counts.</desc>
+  <style>
+    .frame {{ fill:#0d1117; stroke:#30363d; stroke-width:2; }} .eyebrow {{ fill:#8b949e; font:600 12px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:1px; }}
+    .heading {{ fill:#f0f6fc; font:700 18px ui-monospace,SFMono-Regular,Menlo,monospace; }} .stat {{ fill:#161b22; stroke:#30363d; }}
+    .number {{ fill:#f0f6fc; font:700 25px ui-monospace,SFMono-Regular,Menlo,monospace; }} .label {{ fill:#8b949e; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; }}
+  </style>
+  <rect class="frame" x="1" y="1" width="818" height="168" rx="14"/><text x="22" y="27" class="eyebrow">GITHUB PROFILE / {USERNAME.upper()}</text><text x="22" y="47" class="heading">A snapshot of the public work</text>{''.join(cards)}
+</svg>
+'''
+    (ROOT / "profile-stats.svg").write_text(svg, encoding="utf-8")
 
 
 def write_info_card() -> None:
@@ -151,6 +201,7 @@ def main() -> int:
     DATA.parent.mkdir(parents=True, exist_ok=True)
     DATA.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     write_info_card()
+    write_stats_card(payload)
     write_heatmap(payload)
     print(f"wrote {len(payload['days'])} days and {int(payload['total']):,} contributions")
     return 0

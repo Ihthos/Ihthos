@@ -1872,5 +1872,11 @@
       "count": 1,
       "level": 1
     }
-  ]
+  ],
+  "profile": {
+    "public_repos": 10,
+    "stars": 2,
+    "followers": 1,
+    "following": 0
+  }
 }
