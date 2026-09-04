@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="490" height="280" viewBox="0 0 490 280" role="img" aria-labelledby="title desc">
+  <title id="title">Kazi Islam profile information</title><desc id="desc">A terminal-style card describing Kazi's engineering focus and toolkit.</desc>
+  <style>
+    .panel { fill:#0d1117; stroke:#30363d; stroke-width:2; } .bar { fill:#161b22; } .dot-red { fill:#ff7b72; } .dot-yellow { fill:#d29922; } .dot-green { fill:#7ee787; }
+    .prompt { fill:#7ee787; font:600 14px ui-monospace,SFMono-Regular,Menlo,monospace; } .title { fill:#f0f6fc; font:700 18px ui-monospace,SFMono-Regular,Menlo,monospace; }
+    .label { fill:#79c0ff; font:600 14px ui-monospace,SFMono-Regular,Menlo,monospace; } .value { fill:#c9d1d9; font:14px ui-monospace,SFMono-Regular,Menlo,monospace; }
+    .row { opacity:0; transform:translateY(5px); animation:appear .45s ease-out calc(var(--i) * .12s) forwards; } @keyframes appear { to { opacity:1; transform:translateY(0); } }
+  </style>
+  <rect class="panel" x="1" y="1" width="488" height="278" rx="12"/><rect class="bar" x="1" y="1" width="488" height="34" rx="12"/>
+  <circle class="dot-red" cx="22" cy="18" r="6"/><circle class="dot-yellow" cx="42" cy="18" r="6"/><circle class="dot-green" cx="62" cy="18" r="6"/>
+  <text x="92" y="23" class="prompt">kazi@github:~</text><text x="34" y="66" class="title">$ neofetch --profile</text><g class="row" style="--i:0"><text x="34" y="94" class="label">Focus</text><text x="154" y="94" class="value">local AI + applied ML</text></g><g class="row" style="--i:1"><text x="34" y="142" class="label">Builds</text><text x="154" y="142" class="value">education + civic data</text></g><g class="row" style="--i:2"><text x="34" y="190" class="label">Stack</text><text x="154" y="190" class="value">Python · C++ · React</text></g><g class="row" style="--i:3"><text x="34" y="238" class="label">Now</text><text x="154" y="238" class="value">shipping useful software</text></g>
+</svg>
