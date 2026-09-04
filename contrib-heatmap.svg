@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="890" height="154" viewBox="0 0 890 154" role="img" aria-labelledby="title desc">
-  <title id="title">221 contributions in the last year</title><desc id="desc">A contribution calendar for GitHub user zidni0.</desc>
+  <title id="title">221 contributions in the last year</title><desc id="desc">A contribution calendar for GitHub user Ihthos.</desc>
   <style>
     .frame { fill:#0d1117; stroke:#30363d; stroke-width:2; } .heading { fill:#f0f6fc; font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace; } .meta { fill:#8b949e; font:12px ui-monospace,SFMono-Regular,Menlo,monospace; }
     .cell { opacity:0; transform-box:fill-box; transform-origin:center; animation:reveal .5s ease-out calc(var(--i) * 7ms) forwards; } @keyframes reveal { from { opacity:0; transform:translateY(-5px) scale(.75); } to { opacity:1; transform:translateY(0) scale(1); } }
