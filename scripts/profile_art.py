@@ -20,6 +20,11 @@ DATA = ROOT / "data" / "contributions.json"
 CONTRIBUTIONS_URL = f"https://github.com/users/{USERNAME}/contributions"
 API_URL = "https://api.github.com"
 PALETTE = ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353", "#69f0a0"]
+LANGUAGE_COLORS = {
+    "C": "#555555", "C++": "#f34b7d", "CSS": "#663399", "Cuda": "#3A4E3A",
+    "HTML": "#e34c26", "JavaScript": "#f1e05a", "Python": "#3572A5", "Shell": "#89e051",
+    "TypeScript": "#3178c6", "CMake": "#DA3434", "Nix": "#7e7eff", "Dockerfile": "#384d54",
+}
 
 
 class CalendarParser(HTMLParser):
@@ -98,7 +103,8 @@ def fetch_profile_stats() -> dict[str, int]:
         headers["Authorization"] = f"Bearer {token}"
 
     def get_json(path: str) -> object:
-        request = Request(f"{API_URL}{path}", headers={**headers, "User-Agent": "Ihthos-profile-readme/1.0"})
+        url = path if path.startswith("http") else f"{API_URL}{path}"
+        request = Request(url, headers={**headers, "User-Agent": "Ihthos-profile-readme/1.0"})
         with urlopen(request, timeout=30) as response:
             return json.loads(response.read().decode("utf-8"))
 
@@ -107,11 +113,29 @@ def fetch_profile_stats() -> dict[str, int]:
     if not isinstance(profile, dict) or not isinstance(repositories, list):
         raise RuntimeError("GitHub API returned an unexpected profile response")
 
+    language_totals: defaultdict[str, int] = defaultdict(int)
+    for repo in repositories:
+        if not isinstance(repo, dict) or not isinstance(repo.get("languages_url"), str):
+            continue
+        language_data = get_json(str(repo["languages_url"]))
+        if isinstance(language_data, dict):
+            for language, size in language_data.items():
+                language_totals[str(language)] += int(size)
+
+    total_bytes = sum(language_totals.values())
+    languages = [
+        {"name": language, "size": size, "percentage": round(size * 100 / total_bytes), "color": LANGUAGE_COLORS.get(language, "#8b949e")}
+        for language, size in sorted(language_totals.items(), key=lambda item: item[1], reverse=True)
+    ] if total_bytes else []
+    created_at = str(profile.get("created_at", ""))
+    created_year = int(created_at[:4]) if created_at[:4].isdigit() else date.today().year
+
     return {
         "public_repos": int(profile.get("public_repos", 0)),
         "stars": sum(int(repo.get("stargazers_count", 0)) for repo in repositories if isinstance(repo, dict)),
         "followers": int(profile.get("followers", 0)),
-        "following": int(profile.get("following", 0)),
+        "years_active": max(1, date.today().year - created_year + 1),
+        "languages": languages,
     }
 
 
@@ -119,7 +143,7 @@ def write_stats_card(payload: dict[str, object]) -> None:
     stats = payload.get("profile")
     if not isinstance(stats, dict):
         raise RuntimeError("Missing profile statistics; refusing to render an incomplete card")
-    items = [("Repositories", "public_repos"), ("Stars", "stars"), ("Followers", "followers"), ("Following", "following")]
+    items = [("Total Repos", "public_repos"), ("Total Stars", "stars"), ("Followers", "followers"), ("Years Active", "years_active")]
     cards = []
     for index, (label, key) in enumerate(items):
         x = 22 + index * 197
@@ -132,32 +156,48 @@ def write_stats_card(payload: dict[str, object]) -> None:
     .heading {{ fill:#f0f6fc; font:700 18px ui-monospace,SFMono-Regular,Menlo,monospace; }} .stat {{ fill:#161b22; stroke:#30363d; }}
     .number {{ fill:#f0f6fc; font:700 25px ui-monospace,SFMono-Regular,Menlo,monospace; }} .label {{ fill:#8b949e; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; }}
   </style>
-  <rect class="frame" x="1" y="1" width="818" height="168" rx="14"/><text x="22" y="27" class="eyebrow">GITHUB PROFILE / {USERNAME.upper()}</text><text x="22" y="47" class="heading">A snapshot of the public work</text>{''.join(cards)}
+  <rect class="frame" x="1" y="1" width="818" height="168" rx="14"/><text x="22" y="27" class="eyebrow">PROFILE SNAPSHOT</text><text x="22" y="47" class="heading">A snapshot of the public work</text>{''.join(cards)}
 </svg>
 '''
     (ROOT / "profile-stats.svg").write_text(svg, encoding="utf-8")
 
 
-def write_info_card() -> None:
-    rows = [("Focus", "local AI + applied ML"), ("Builds", "education + civic data"), ("Stack", "Python · C++ · React"), ("Now", "shipping useful software")]
-    row_markup = []
-    for index, (label, value) in enumerate(rows):
-        y = 94 + index * 48
-        row_markup.append(f'<g class="row" style="--i:{index}"><text x="34" y="{y}" class="label">{escape(label)}</text><text x="154" y="{y}" class="value">{escape(value)}</text></g>')
-    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="490" height="280" viewBox="0 0 490 280" role="img" aria-labelledby="title desc">
-  <title id="title">Kazi Islam profile information</title><desc id="desc">A terminal-style card describing Kazi's engineering focus and toolkit.</desc>
+def write_language_card(payload: dict[str, object]) -> None:
+    stats = payload.get("profile")
+    languages = stats.get("languages") if isinstance(stats, dict) else None
+    if not isinstance(languages, list):
+        raise RuntimeError("Missing language statistics; refusing to render an incomplete card")
+    languages = [language for language in languages if isinstance(language, dict)][:5]
+    total = sum(int(language.get("size", 0)) for language in languages)
+    if total <= 0:
+        raise RuntimeError("GitHub returned no language bytes; refusing to render an empty card")
+
+    size, stroke, radius = 118, 18, 50
+    circumference = 2 * 3.141592653589793 * radius
+    segments, legend = [], []
+    offset = 0.0
+    for index, language in enumerate(languages):
+        percentage = int(language.get("percentage", 0))
+        exact_percentage = int(language.get("size", 0)) * 100 / total
+        color = escape(str(language.get("color", "#8b949e")))
+        dash = exact_percentage / 100 * circumference
+        segments.append(f'<circle cx="59" cy="59" r="{radius}" fill="none" stroke="{color}" stroke-width="{stroke}" stroke-dasharray="{dash:.2f} {circumference:.2f}" stroke-dashoffset="{-offset / 100 * circumference:.2f}"/>')
+        y = 32 + index * 25
+        legend.append(f'<circle cx="180" cy="{y - 4}" r="4" fill="{color}"/><text x="193" y="{y}" class="lang">{escape(str(language.get("name", "Unknown")))}</text><text x="380" y="{y}" text-anchor="end" class="percent">{percentage}%</text>')
+        offset += exact_percentage
+
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="430" height="170" viewBox="0 0 430 170" role="img" aria-labelledby="title desc">
+  <title id="title">Languages used across public repositories</title><desc id="desc">Top programming languages by bytes in public repositories.</desc>
   <style>
-    .panel {{ fill:#0d1117; stroke:#30363d; stroke-width:2; }} .bar {{ fill:#161b22; }} .dot-red {{ fill:#ff7b72; }} .dot-yellow {{ fill:#d29922; }} .dot-green {{ fill:#7ee787; }}
-    .prompt {{ fill:#7ee787; font:600 14px ui-monospace,SFMono-Regular,Menlo,monospace; }} .title {{ fill:#f0f6fc; font:700 18px ui-monospace,SFMono-Regular,Menlo,monospace; }}
-    .label {{ fill:#79c0ff; font:600 14px ui-monospace,SFMono-Regular,Menlo,monospace; }} .value {{ fill:#c9d1d9; font:14px ui-monospace,SFMono-Regular,Menlo,monospace; }}
-    .row {{ opacity:0; transform:translateY(5px); animation:appear .45s ease-out calc(var(--i) * .12s) forwards; }} @keyframes appear {{ to {{ opacity:1; transform:translateY(0); }} }}
+    .frame {{ fill:#0d1117; stroke:#30363d; stroke-width:2; }} .label {{ fill:#8b949e; font:600 11px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:1px; }}
+    .lang {{ fill:#f0f6fc; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; }} .percent {{ fill:#8b949e; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; }}
+    .ring {{ transform:rotate(-90deg); transform-origin:59px 59px; }}
   </style>
-  <rect class="panel" x="1" y="1" width="488" height="278" rx="12"/><rect class="bar" x="1" y="1" width="488" height="34" rx="12"/>
-  <circle class="dot-red" cx="22" cy="18" r="6"/><circle class="dot-yellow" cx="42" cy="18" r="6"/><circle class="dot-green" cx="62" cy="18" r="6"/>
-  <text x="92" y="23" class="prompt">kazi@github:~</text><text x="34" y="66" class="title">$ neofetch --profile</text>{''.join(row_markup)}
+  <rect class="frame" x="1" y="1" width="428" height="168" rx="12"/><text x="22" y="23" class="label">LANGUAGE DISTRIBUTION</text>
+  <g class="ring">{''.join(segments)}</g><text x="59" y="63" text-anchor="middle" class="label">TOP</text><text x="59" y="78" text-anchor="middle" class="label">LANGS</text>{''.join(legend)}
 </svg>
 '''
-    (ROOT / "info-card.svg").write_text(svg, encoding="utf-8")
+    (ROOT / "language-card.svg").write_text(svg, encoding="utf-8")
 
 
 def write_heatmap(payload: dict[str, object]) -> None:
@@ -200,8 +240,8 @@ def main() -> int:
     payload = fetch_data()
     DATA.parent.mkdir(parents=True, exist_ok=True)
     DATA.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    write_info_card()
     write_stats_card(payload)
+    write_language_card(payload)
     write_heatmap(payload)
     print(f"wrote {len(payload['days'])} days and {int(payload['total']):,} contributions")
     return 0

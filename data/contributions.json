@@ -1877,6 +1877,122 @@
     "public_repos": 10,
     "stars": 2,
     "followers": 1,
-    "following": 0
+    "years_active": 3,
+    "languages": [
+      {
+        "name": "C++",
+        "size": 9710380,
+        "percentage": 48,
+        "color": "#f34b7d"
+      },
+      {
+        "name": "HTML",
+        "size": 3696798,
+        "percentage": 18,
+        "color": "#e34c26"
+      },
+      {
+        "name": "C",
+        "size": 2192062,
+        "percentage": 11,
+        "color": "#555555"
+      },
+      {
+        "name": "Cuda",
+        "size": 2111550,
+        "percentage": 10,
+        "color": "#3A4E3A"
+      },
+      {
+        "name": "Python",
+        "size": 1034093,
+        "percentage": 5,
+        "color": "#3572A5"
+      },
+      {
+        "name": "Metal",
+        "size": 402504,
+        "percentage": 2,
+        "color": "#8b949e"
+      },
+      {
+        "name": "Jinja",
+        "size": 337359,
+        "percentage": 2,
+        "color": "#8b949e"
+      },
+      {
+        "name": "Objective-C",
+        "size": 275356,
+        "percentage": 1,
+        "color": "#8b949e"
+      },
+      {
+        "name": "JavaScript",
+        "size": 210488,
+        "percentage": 1,
+        "color": "#f1e05a"
+      },
+      {
+        "name": "CSS",
+        "size": 134382,
+        "percentage": 1,
+        "color": "#663399"
+      },
+      {
+        "name": "CMake",
+        "size": 107068,
+        "percentage": 1,
+        "color": "#DA3434"
+      },
+      {
+        "name": "Shell",
+        "size": 99848,
+        "percentage": 0,
+        "color": "#89e051"
+      },
+      {
+        "name": "TypeScript",
+        "size": 66236,
+        "percentage": 0,
+        "color": "#3178c6"
+      },
+      {
+        "name": "Nix",
+        "size": 19373,
+        "percentage": 0,
+        "color": "#7e7eff"
+      },
+      {
+        "name": "Dockerfile",
+        "size": 18165,
+        "percentage": 0,
+        "color": "#384d54"
+      },
+      {
+        "name": "HCL",
+        "size": 2173,
+        "percentage": 0,
+        "color": "#8b949e"
+      },
+      {
+        "name": "Swift",
+        "size": 2044,
+        "percentage": 0,
+        "color": "#8b949e"
+      },
+      {
+        "name": "Batchfile",
+        "size": 1615,
+        "percentage": 0,
+        "color": "#8b949e"
+      },
+      {
+        "name": "Makefile",
+        "size": 1297,
+        "percentage": 0,
+        "color": "#8b949e"
+      }
+    ]
   }
 }
