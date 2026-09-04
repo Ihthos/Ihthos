@@ -1,8 +1,8 @@
 {
   "username": "zidni0",
   "source": "https://github.com/users/zidni0/contributions",
-  "fetched_at": "2026-09-03",
-  "total": 236,
+  "fetched_at": "2026-09-04",
+  "total": 221,
   "current_streak": 2,
   "longest_streak": 5,
   "monthly": {
@@ -18,8 +18,8 @@
     "2026-05": 3,
     "2026-06": 87,
     "2026-07": 26,
-    "2026-08": 36,
-    "2026-09": 5
+    "2026-08": 20,
+    "2026-09": 6
   },
   "days": [
     {
@@ -1769,13 +1769,13 @@
     },
     {
       "date": "2026-08-15",
-      "count": 15,
-      "level": 2
+      "count": 0,
+      "level": 0
     },
     {
       "date": "2026-08-16",
-      "count": 1,
-      "level": 1
+      "count": 0,
+      "level": 0
     },
     {
       "date": "2026-08-17",
@@ -1864,7 +1864,7 @@
     },
     {
       "date": "2026-09-03",
-      "count": 4,
+      "count": 5,
       "level": 1
     },
     {
