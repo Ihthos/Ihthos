@@ -13,7 +13,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.request import Request, urlopen
 
-USERNAME = "zidni0"
+USERNAME = "Ihthos"
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data" / "contributions.json"
 CONTRIBUTIONS_URL = f"https://github.com/users/{USERNAME}/contributions"
@@ -59,7 +59,7 @@ class CalendarParser(HTMLParser):
 
 
 def fetch_data() -> dict[str, object]:
-    request = Request(CONTRIBUTIONS_URL, headers={"User-Agent": "zidni0-profile-readme/1.0"})
+    request = Request(CONTRIBUTIONS_URL, headers={"User-Agent": "Ihthos-profile-readme/1.0"})
     with urlopen(request, timeout=30) as response:
         source = response.read().decode("utf-8")
     parser = CalendarParser()
