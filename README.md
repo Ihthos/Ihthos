@@ -18,13 +18,7 @@
 <table>
   <tr>
     <td width="50%" valign="top">
-      <h3>Core Technologies</h3>
-      <p>
-        <code>Python</code> <code>FastAPI</code> <code>C++</code> <code>CUDA</code><br />
-        <code>Vulkan</code> <code>React</code> <code>TypeScript</code><br />
-        <code>Cloudflare Workers</code>
-      </p>
-      <p><sub>Building agents, tools, and high-performance local AI systems.</sub></p>
+      <img src="./tech-stack-card.svg" width="430" alt="Color-coded core technologies" />
     </td>
     <td width="50%" valign="top" align="center">
       <img src="./language-card.svg" width="430" alt="Languages used across public repositories" />

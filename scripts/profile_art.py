@@ -181,8 +181,8 @@ def write_language_card(payload: dict[str, object]) -> None:
         exact_percentage = int(language.get("size", 0)) * 100 / total
         color = escape(str(language.get("color", "#8b949e")))
         dash = exact_percentage / 100 * circumference
-        segments.append(f'<circle cx="59" cy="85" r="{radius}" fill="none" stroke="{color}" stroke-width="{stroke}" stroke-dasharray="{dash:.2f} {circumference:.2f}" stroke-dashoffset="{-offset / 100 * circumference:.2f}"/>')
-        y = 42 + index * 25
+        segments.append(f'<circle cx="59" cy="90" r="{radius}" fill="none" stroke="{color}" stroke-width="{stroke}" stroke-dasharray="{dash:.2f} {circumference:.2f}" stroke-dashoffset="{-offset / 100 * circumference:.2f}"/>')
+        y = 43 + index * 25
         legend.append(f'<circle cx="180" cy="{y - 4}" r="4" fill="{color}"/><text x="193" y="{y}" class="lang">{escape(str(language.get("name", "Unknown")))}</text><text x="380" y="{y}" text-anchor="end" class="percent">{percentage}%</text>')
         offset += exact_percentage
 
@@ -191,13 +191,35 @@ def write_language_card(payload: dict[str, object]) -> None:
   <style>
     .frame {{ fill:#0d1117; stroke:#30363d; stroke-width:2; }} .label {{ fill:#8b949e; font:600 11px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:1px; }}
     .lang {{ fill:#f0f6fc; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; }} .percent {{ fill:#8b949e; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; }}
-    .ring {{ transform:rotate(-90deg); transform-origin:59px 85px; }}
+    .ring {{ transform:rotate(-90deg); transform-origin:59px 90px; }}
   </style>
-  <rect class="frame" x="1" y="1" width="428" height="168" rx="12"/><text x="180" y="22" class="label">TOP 5 LANGUAGES</text>
-  <g class="ring">{''.join(segments)}</g><text x="59" y="89" text-anchor="middle" class="label">TOP</text><text x="59" y="104" text-anchor="middle" class="label">LANGS</text>{''.join(legend)}
+  <rect class="frame" x="1" y="1" width="428" height="178" rx="12"/>
+  <g class="ring">{''.join(segments)}</g><text x="59" y="94" text-anchor="middle" class="label">TOP</text><text x="59" y="109" text-anchor="middle" class="label">LANGS</text>{''.join(legend)}
 </svg>
 '''
-    (ROOT / "language-card.svg").write_text(svg, encoding="utf-8")
+    (ROOT / "language-card.svg").write_text(svg.replace('height="170" viewBox="0 0 430 170"', 'height="180" viewBox="0 0 430 180"'), encoding="utf-8")
+
+
+def write_tech_stack_card() -> None:
+    pills = [
+        ("Python", "#a371f7", 82), ("FastAPI", "#009688", 88), ("C++", "#f34b7d", 64), ("CUDA", "#3A4E3A", 70),
+        ("Vulkan", "#8f7ee6", 74), ("React", "#61dafb", 70), ("TypeScript", "#3178c6", 96),
+        ("Cloudflare Workers", "#f38020", 164),
+    ]
+    pills_markup = []
+    positions = [(22, 43), (114, 43), (212, 43), (290, 43), (22, 78), (106, 78), (192, 78), (22, 113)]
+    for (name, color, width), (x, y) in zip(pills, positions):
+        pills_markup.append(f'<g><rect x="{x}" y="{y}" width="{width}" height="24" rx="6" fill="#161b22" stroke="#30363d"/><circle cx="{x + 12}" cy="{y + 12}" r="4" fill="{color}"/><text x="{x + 22}" y="{y + 16}" class="tech">{escape(name)}</text></g>')
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="430" height="168" viewBox="0 0 430 168" role="img" aria-labelledby="title desc">
+  <title id="title">Core technologies</title><desc id="desc">Color-coded technologies used in Kazi's public projects.</desc>
+  <style>
+    .frame {{ fill:#0d1117; stroke:#30363d; stroke-width:2; }} .heading {{ fill:#f0f6fc; font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace; }}
+    .tech {{ fill:#f0f6fc; font:12px ui-monospace,SFMono-Regular,Menlo,monospace; }}
+  </style>
+  <rect class="frame" x="1" y="1" width="428" height="166" rx="12"/><text x="22" y="27" class="heading">Core Technologies</text>{''.join(pills_markup)}
+</svg>
+'''
+    (ROOT / "tech-stack-card.svg").write_text(svg, encoding="utf-8")
 
 
 def write_heatmap(payload: dict[str, object]) -> None:
@@ -242,6 +264,7 @@ def main() -> int:
     DATA.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     write_stats_card(payload)
     write_language_card(payload)
+    write_tech_stack_card()
     write_heatmap(payload)
     print(f"wrote {len(payload['days'])} days and {int(payload['total']):,} contributions")
     return 0
