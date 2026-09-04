@@ -181,8 +181,8 @@ def write_language_card(payload: dict[str, object]) -> None:
         exact_percentage = int(language.get("size", 0)) * 100 / total
         color = escape(str(language.get("color", "#8b949e")))
         dash = exact_percentage / 100 * circumference
-        segments.append(f'<circle cx="59" cy="59" r="{radius}" fill="none" stroke="{color}" stroke-width="{stroke}" stroke-dasharray="{dash:.2f} {circumference:.2f}" stroke-dashoffset="{-offset / 100 * circumference:.2f}"/>')
-        y = 32 + index * 25
+        segments.append(f'<circle cx="59" cy="85" r="{radius}" fill="none" stroke="{color}" stroke-width="{stroke}" stroke-dasharray="{dash:.2f} {circumference:.2f}" stroke-dashoffset="{-offset / 100 * circumference:.2f}"/>')
+        y = 42 + index * 25
         legend.append(f'<circle cx="180" cy="{y - 4}" r="4" fill="{color}"/><text x="193" y="{y}" class="lang">{escape(str(language.get("name", "Unknown")))}</text><text x="380" y="{y}" text-anchor="end" class="percent">{percentage}%</text>')
         offset += exact_percentage
 
@@ -191,10 +191,10 @@ def write_language_card(payload: dict[str, object]) -> None:
   <style>
     .frame {{ fill:#0d1117; stroke:#30363d; stroke-width:2; }} .label {{ fill:#8b949e; font:600 11px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:1px; }}
     .lang {{ fill:#f0f6fc; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; }} .percent {{ fill:#8b949e; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; }}
-    .ring {{ transform:rotate(-90deg); transform-origin:59px 59px; }}
+    .ring {{ transform:rotate(-90deg); transform-origin:59px 85px; }}
   </style>
-  <rect class="frame" x="1" y="1" width="428" height="168" rx="12"/><text x="22" y="23" class="label">LANGUAGE DISTRIBUTION</text>
-  <g class="ring">{''.join(segments)}</g><text x="59" y="63" text-anchor="middle" class="label">TOP</text><text x="59" y="78" text-anchor="middle" class="label">LANGS</text>{''.join(legend)}
+  <rect class="frame" x="1" y="1" width="428" height="168" rx="12"/><text x="180" y="22" class="label">TOP 5 LANGUAGES</text>
+  <g class="ring">{''.join(segments)}</g><text x="59" y="89" text-anchor="middle" class="label">TOP</text><text x="59" y="104" text-anchor="middle" class="label">LANGS</text>{''.join(legend)}
 </svg>
 '''
     (ROOT / "language-card.svg").write_text(svg, encoding="utf-8")
