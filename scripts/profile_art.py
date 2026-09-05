@@ -202,19 +202,19 @@ def write_language_card(payload: dict[str, object]) -> None:
 
 def write_tech_stack_card() -> None:
     pills = [
-        ("Python", "#a371f7", 82), ("FastAPI", "#009688", 88), ("C++", "#f34b7d", 64), ("CUDA", "#3A4E3A", 70),
-        ("Vulkan", "#8f7ee6", 74), ("React", "#61dafb", 70), ("TypeScript", "#3178c6", 96),
-        ("Cloudflare Workers", "#f38020", 164),
+        ("Python", "#a371f7", "#ffffff", 82), ("FastAPI", "#009688", "#ffffff", 88), ("C++", "#f34b7d", "#ffffff", 64), ("CUDA", "#3A4E3A", "#ffffff", 70),
+        ("Vulkan", "#8f7ee6", "#0d1117", 74), ("React", "#61dafb", "#0d1117", 70), ("TypeScript", "#3178c6", "#ffffff", 96),
+        ("Cloudflare Workers", "#f38020", "#0d1117", 164),
     ]
     pills_markup = []
     positions = [(22, 43), (114, 43), (212, 43), (290, 43), (22, 78), (106, 78), (192, 78), (22, 113)]
-    for (name, color, width), (x, y) in zip(pills, positions):
-        pills_markup.append(f'<g><rect x="{x}" y="{y}" width="{width}" height="24" rx="6" fill="#161b22" stroke="#30363d"/><circle cx="{x + 12}" cy="{y + 12}" r="4" fill="{color}"/><text x="{x + 22}" y="{y + 16}" class="tech">{escape(name)}</text></g>')
+    for (name, color, text_color, width), (x, y) in zip(pills, positions):
+        pills_markup.append(f'<g><rect x="{x}" y="{y}" width="{width}" height="24" rx="6" fill="{color}" stroke="{color}"/><text x="{x + width / 2}" y="{y + 16}" text-anchor="middle" fill="{text_color}" class="tech">{escape(name)}</text></g>')
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="430" height="168" viewBox="0 0 430 168" role="img" aria-labelledby="title desc">
   <title id="title">Core technologies</title><desc id="desc">Color-coded technologies used in Kazi's public projects.</desc>
   <style>
     .frame {{ fill:#0d1117; stroke:#30363d; stroke-width:2; }} .heading {{ fill:#f0f6fc; font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace; }}
-    .tech {{ fill:#f0f6fc; font:12px ui-monospace,SFMono-Regular,Menlo,monospace; }}
+    .tech {{ font:600 12px ui-monospace,SFMono-Regular,Menlo,monospace; }}
   </style>
   <rect class="frame" x="1" y="1" width="428" height="166" rx="12"/><text x="22" y="27" class="heading">Core Technologies</text>{''.join(pills_markup)}
 </svg>
