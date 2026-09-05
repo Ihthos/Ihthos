@@ -25,7 +25,7 @@
 <table>
   <tr>
     <td width="50%" valign="top">
-      <h3>Qwen3.8 Flash-Next · Heterogeneous Inference Lab</h3>
+      <h3><a href="https://github.com/Ihthos/qwen38-flash-next-inference">Qwen3.8 Flash-Next · Heterogeneous Inference Lab</a></h3>
       <p>My strongest systems project: a Qwen3.8 Flash-Next serving stack tuned across an RTX 3090 over OCuLink and a Radeon 8060S on Ryzen AI Max+ 395.</p>
       <sub>CUDA + Vulkan · MTP · 66.17 tok/s average · 68.47 tok/s peak</sub>
     </td>
