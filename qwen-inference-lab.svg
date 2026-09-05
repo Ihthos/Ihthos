@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 260" role="img" aria-labelledby="title desc">
+  <title id="title">Qwen3.8 Flash-Next heterogeneous inference lab</title>
+  <desc id="desc">A dark engineering diagram showing Vulkan on a Radeon 8060S and CUDA on an RTX 3090 sharing a Qwen3.8 Flash-Next inference pipeline.</desc>
+  <defs>
+    <linearGradient id="panel" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#171c24"/>
+      <stop offset="1" stop-color="#0c1016"/>
+    </linearGradient>
+    <linearGradient id="violet" x1="0" x2="1">
+      <stop offset="0" stop-color="#7c5bb6"/>
+      <stop offset="1" stop-color="#563d85"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" x2="1">
+      <stop offset="0" stop-color="#d99536"/>
+      <stop offset="1" stop-color="#9a6422"/>
+    </linearGradient>
+    <filter id="glowViolet" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowAmber" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <style>
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+      .label { fill: #a6afbf; font-size: 11px; letter-spacing: 1.3px; }
+      .body { fill: #dbe1ea; font-size: 13px; }
+      .small { fill: #7d8798; font-size: 10px; }
+      .line { stroke: #303847; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <rect x="1" y="1" width="858" height="258" rx="14" fill="url(#panel)" stroke="#343d4d"/>
+  <text x="28" y="31" class="mono label">QWEN3.8 FLASH-NEXT / HETEROGENEOUS INFERENCE LAB</text>
+  <text x="28" y="55" class="mono" fill="#f1f4f8" font-size="19" font-weight="700">One model. Two accelerators. One scheduler.</text>
+  <line x1="28" y1="72" x2="832" y2="72" class="line"/>
+
+  <rect x="28" y="93" width="205" height="65" rx="10" fill="#151b24" stroke="#54427d"/>
+  <text x="44" y="114" class="mono label" fill="#a98bd8">VULKAN BACKEND</text>
+  <text x="44" y="135" class="mono body">Radeon 8060S</text>
+  <text x="44" y="150" class="mono small">Ryzen AI Max+ 395 · 128 GB unified</text>
+
+  <rect x="627" y="93" width="205" height="65" rx="10" fill="#151b24" stroke="#795526"/>
+  <text x="643" y="114" class="mono label" fill="#dda14b">CUDA BACKEND</text>
+  <text x="643" y="135" class="mono body">RTX 3090 · 24 GB</text>
+  <text x="643" y="150" class="mono small">OCuLink · CUDA graphs + MMQ</text>
+
+  <path d="M233 125 H300" stroke="#8061b8" stroke-width="2"/>
+  <path d="M560 125 H627" stroke="#c18432" stroke-width="2"/>
+  <circle cx="268" cy="125" r="4" fill="#a98bd8" filter="url(#glowViolet)">
+    <animate attributeName="cx" values="238;292;238" dur="2.7s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="592" cy="125" r="4" fill="#e0a24b" filter="url(#glowAmber)">
+    <animate attributeName="cx" values="622;568;622" dur="2.2s" repeatCount="indefinite"/>
+  </circle>
+
+  <rect x="300" y="91" width="260" height="70" rx="10" fill="#11161e" stroke="#647187"/>
+  <text x="320" y="113" class="mono label">QWEN3.8 FLASH-NEXT</text>
+  <text x="320" y="135" class="mono body">62 / 38 layer split</text>
+  <text x="320" y="151" class="mono small">MTP on CUDA · one Vulkan → CUDA handoff</text>
+
+  <text x="28" y="192" class="mono label">TUNING SURFACE</text>
+  <rect x="28" y="204" width="110" height="28" rx="7" fill="#2b2440" stroke="#5b4782"/>
+  <text x="83" y="222" text-anchor="middle" class="mono body" font-size="11">KERNELS</text>
+  <rect x="151" y="204" width="120" height="28" rx="7" fill="#28223b" stroke="#5b4782"/>
+  <text x="211" y="222" text-anchor="middle" class="mono body" font-size="11">CUDA + VK</text>
+  <rect x="284" y="204" width="110" height="28" rx="7" fill="#362a1b" stroke="#795526"/>
+  <text x="339" y="222" text-anchor="middle" class="mono body" font-size="11">MTP</text>
+  <rect x="407" y="204" width="128" height="28" rx="7" fill="#202a31" stroke="#4c7380"/>
+  <text x="471" y="222" text-anchor="middle" class="mono body" font-size="11">Q8 KV CACHE</text>
+  <path d="M138 218 H151 M271 218 H284 M394 218 H407" stroke="#566173"/>
+  <text x="586" y="211" class="mono label">MEASURED</text>
+  <text x="586" y="232" class="mono" fill="#f0bd6d" font-size="20" font-weight="700">66.17 avg</text>
+  <text x="732" y="232" class="mono" fill="#b89be8" font-size="20" font-weight="700">68.47 peak</text>
+</svg>

@@ -25,9 +25,9 @@
 <table>
   <tr>
     <td width="50%" valign="top">
-      <h3><a href="https://github.com/Ihthos/dsv4-flash-ikllama">dsv4-flash-ikllama</a></h3>
-      <p>DeepSeek-V4-Flash local inference with <code>ik_llama.cpp</code>, RTX 3090, and AMD Strix Halo.</p>
-      <sub>C++ · 0 stars · 0 forks</sub>
+      <h3>Qwen3.8 Flash-Next · Heterogeneous Inference Lab</h3>
+      <p>My strongest systems project: a Qwen3.8 Flash-Next serving stack tuned across an RTX 3090 over OCuLink and a Radeon 8060S on Ryzen AI Max+ 395.</p>
+      <sub>CUDA + Vulkan · MTP · 66.17 tok/s average · 68.47 tok/s peak</sub>
     </td>
     <td width="50%" valign="top">
       <h3><a href="https://github.com/Ihthos/CUNYRMP">CUNYRMP</a></h3>
@@ -50,5 +50,13 @@
 </table>
 
 The [Socratic AI Homework Helper](https://github.com/ihthos0-art/tutions) is maintained under a second GitHub identity.
+
+## Inference Lab
+
+<div align="center">
+  <img src="./qwen-inference-lab.svg" width="860" alt="Qwen3.8 Flash-Next heterogeneous CUDA and Vulkan inference pipeline" />
+</div>
+
+I designed and benchmarked the heterogeneous runtime: a 62/38 layer split, Vulkan-to-CUDA placement, CUDA-side multi-token prediction, FlashAttention, quantized KV cache, and backend-specific tuning. The reported result is from a deterministic 256-token decode benchmark; it is a benchmark result, not a universal throughput guarantee.
 
 <sub>Stats, language distribution, and contribution art are generated from GitHub public data and refreshed daily.</sub>
