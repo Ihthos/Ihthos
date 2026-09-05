@@ -92,7 +92,7 @@ def fetch_data() -> dict[str, object]:
         run = run + 1 if int(day["count"]) > 0 else 0
         longest = max(longest, run)
 
-    return {"username": USERNAME, "source": CONTRIBUTIONS_URL, "fetched_at": date.today().isoformat(), "total": total, "current_streak": current, "longest_streak": longest, "monthly": dict(sorted(monthly.items())), "days": [{"date": day["date"], "count": day["count"], "level": day["level"]} for day in days], "profile": fetch_profile_stats()}
+    return {"username": USERNAME, "source": CONTRIBUTIONS_URL, "fetched_at": date.today().isoformat(), "total": total, "active_days": len(active_dates), "current_streak": current, "longest_streak": longest, "monthly": dict(sorted(monthly.items())), "days": [{"date": day["date"], "count": day["count"], "level": day["level"]} for day in days], "profile": fetch_profile_stats()}
 
 
 def fetch_profile_stats() -> dict[str, int]:
@@ -143,14 +143,22 @@ def write_stats_card(payload: dict[str, object]) -> None:
     stats = payload.get("profile")
     if not isinstance(stats, dict):
         raise RuntimeError("Missing profile statistics; refusing to render an incomplete card")
-    items = [("Total Repos", "public_repos"), ("Total Stars", "stars"), ("Followers", "followers"), ("Years Active", "years_active")]
+    languages = stats.get("languages")
+    if not isinstance(languages, list):
+        raise RuntimeError("Missing language statistics; refusing to render an incomplete card")
+    items = [
+        ("Contributions", int(payload.get("total", 0))),
+        ("Active Days", int(payload.get("active_days", 0))),
+        ("Languages", len(languages)),
+        ("Years Active", int(stats.get("years_active", 0))),
+    ]
     cards = []
-    for index, (label, key) in enumerate(items):
+    for index, (label, value) in enumerate(items):
         x = 22 + index * 197
-        value = escape(f"{int(stats[key]):,}")
-        cards.append(f'''<g transform="translate({x} 54)"><rect class="stat" width="178" height="92" rx="12"/><text x="18" y="35" class="number">{value}</text><text x="18" y="63" class="label">{escape(label)}</text></g>''')
+        formatted = escape(f"{value:,}")
+        cards.append(f'''<g transform="translate({x} 54)"><rect class="stat" width="178" height="92" rx="12"/><text x="18" y="35" class="number">{formatted}</text><text x="18" y="63" class="label">{escape(label)}</text></g>''')
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="820" height="170" viewBox="0 0 820 170" role="img" aria-labelledby="title desc">
-  <title id="title">GitHub statistics for {USERNAME}</title><desc id="desc">Public repository, star, follower, and following counts.</desc>
+  <title id="title">GitHub activity statistics for {USERNAME}</title><desc id="desc">Contribution, active-day, language, and years-active counts.</desc>
   <style>
     .frame {{ fill:#0d1117; stroke:#30363d; stroke-width:2; }} .eyebrow {{ fill:#8b949e; font:600 12px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:1px; }}
     .heading {{ fill:#f0f6fc; font:700 18px ui-monospace,SFMono-Regular,Menlo,monospace; }} .stat {{ fill:#161b22; stroke:#30363d; }}
