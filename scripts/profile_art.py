@@ -219,7 +219,7 @@ def write_tech_stack_card() -> None:
   <rect class="frame" x="1" y="1" width="428" height="166" rx="12"/><text x="22" y="27" class="heading">Core Technologies</text>{''.join(pills_markup)}
 </svg>
 '''
-    (ROOT / "tech-stack-card.svg").write_text(svg, encoding="utf-8")
+    (ROOT / "tech-stack-filled.svg").write_text(svg, encoding="utf-8")
 
 
 def write_heatmap(payload: dict[str, object]) -> None:
