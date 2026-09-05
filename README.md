@@ -7,12 +7,6 @@
   <img src="./profile-stats.svg" width="860" alt="GitHub profile statistics" />
 </div>
 
-## Contributions
-
-<div align="center">
-  <img src="./contrib-heatmap.svg" width="860" alt="GitHub contribution calendar" />
-</div>
-
 ## Tech Stack & Languages
 
 <table>
