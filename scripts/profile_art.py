@@ -202,9 +202,9 @@ def write_language_card(payload: dict[str, object]) -> None:
 
 def write_tech_stack_card() -> None:
     pills = [
-        ("Python", "#a371f7", "#ffffff", 82), ("FastAPI", "#009688", "#ffffff", 88), ("C++", "#f34b7d", "#ffffff", 64), ("CUDA", "#3A4E3A", "#ffffff", 70),
-        ("Vulkan", "#8f7ee6", "#0d1117", 74), ("React", "#61dafb", "#0d1117", 70), ("TypeScript", "#3178c6", "#ffffff", 96),
-        ("Cloudflare Workers", "#f38020", "#0d1117", 164),
+        ("Python", "#8959c8", "#000000", 82), ("FastAPI", "#00796b", "#000000", 88), ("C++", "#c13b6b", "#000000", 64), ("CUDA", "#4a7658", "#000000", 70),
+        ("Vulkan", "#6d5ab0", "#000000", 74), ("React", "#3fa9b8", "#000000", 70), ("TypeScript", "#245d9a", "#000000", 96),
+        ("Cloudflare Workers", "#c66a19", "#000000", 164),
     ]
     pills_markup = []
     positions = [(22, 43), (114, 43), (212, 43), (290, 43), (22, 78), (106, 78), (192, 78), (22, 113)]
@@ -219,7 +219,7 @@ def write_tech_stack_card() -> None:
   <rect class="frame" x="1" y="1" width="428" height="166" rx="12"/><text x="22" y="27" class="heading">Core Technologies</text>{''.join(pills_markup)}
 </svg>
 '''
-    (ROOT / "tech-stack-filled.svg").write_text(svg, encoding="utf-8")
+    (ROOT / "tech-stack-dark.svg").write_text(svg, encoding="utf-8")
 
 
 def write_heatmap(payload: dict[str, object]) -> None:

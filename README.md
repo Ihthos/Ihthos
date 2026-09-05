@@ -18,7 +18,7 @@
 <table>
   <tr>
     <td width="50%" valign="top">
-      <img src="./tech-stack-filled.svg" width="430" alt="Color-coded core technologies" />
+      <img src="./tech-stack-dark.svg" width="430" alt="Color-coded core technologies" />
     </td>
     <td width="50%" valign="top" align="center">
       <img src="./language-card.svg" width="430" alt="Languages used across public repositories" />
