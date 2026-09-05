@@ -172,7 +172,7 @@ def write_language_card(payload: dict[str, object]) -> None:
     if total <= 0:
         raise RuntimeError("GitHub returned no language bytes; refusing to render an empty card")
 
-    size, stroke, radius = 118, 18, 50
+    size, stroke, radius = 118, 18, 45
     circumference = 2 * 3.141592653589793 * radius
     segments, legend = [], []
     offset = 0.0
@@ -181,7 +181,7 @@ def write_language_card(payload: dict[str, object]) -> None:
         exact_percentage = int(language.get("size", 0)) * 100 / total
         color = escape(str(language.get("color", "#8b949e")))
         dash = exact_percentage / 100 * circumference
-        segments.append(f'<circle cx="59" cy="90" r="{radius}" fill="none" stroke="{color}" stroke-width="{stroke}" stroke-dasharray="{dash:.2f} {circumference:.2f}" stroke-dashoffset="{-offset / 100 * circumference:.2f}"/>')
+        segments.append(f'<circle cx="72" cy="90" r="{radius}" fill="none" stroke="{color}" stroke-width="{stroke}" stroke-dasharray="{dash:.2f} {circumference:.2f}" stroke-dashoffset="{-offset / 100 * circumference:.2f}"/>')
         y = 43 + index * 25
         legend.append(f'<circle cx="180" cy="{y - 4}" r="4" fill="{color}"/><text x="193" y="{y}" class="lang">{escape(str(language.get("name", "Unknown")))}</text><text x="380" y="{y}" text-anchor="end" class="percent">{percentage}%</text>')
         offset += exact_percentage
@@ -191,10 +191,10 @@ def write_language_card(payload: dict[str, object]) -> None:
   <style>
     .frame {{ fill:#0d1117; stroke:#30363d; stroke-width:2; }} .label {{ fill:#8b949e; font:600 11px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:1px; }}
     .lang {{ fill:#f0f6fc; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; }} .percent {{ fill:#8b949e; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; }}
-    .ring {{ transform:rotate(-90deg); transform-origin:59px 90px; }}
+    .ring {{ transform:rotate(-90deg); transform-origin:72px 90px; }}
   </style>
   <rect class="frame" x="1" y="1" width="428" height="178" rx="12"/>
-  <g class="ring">{''.join(segments)}</g><text x="59" y="94" text-anchor="middle" class="label">TOP</text><text x="59" y="109" text-anchor="middle" class="label">LANGS</text>{''.join(legend)}
+  <g class="ring">{''.join(segments)}</g><text x="72" y="94" text-anchor="middle" class="label">TOP</text><text x="72" y="109" text-anchor="middle" class="label">LANGS</text>{''.join(legend)}
 </svg>
 '''
     (ROOT / "language-card.svg").write_text(svg.replace('height="170" viewBox="0 0 430 170"', 'height="180" viewBox="0 0 430 180"'), encoding="utf-8")
