@@ -36,10 +36,15 @@
     </td>
   </tr>
   <tr>
-    <td colspan="2" valign="top">
+    <td width="50%" valign="top">
       <h3>PotholeIQ · <a href="https://github.com/Ihthos/potholeiq-api">API</a> + <a href="https://github.com/Ihthos/potholeiq-frontend">Frontend</a></h3>
       <p>End-to-end civic data platform for NYC pothole risk, reports, alerts, map exploration, filters, and API-powered workflows.</p>
       <sub>FastAPI · Python · React · TypeScript</sub>
+    </td>
+    <td width="50%" valign="top">
+      <h3><a href="https://github.com/Ihthos/tutorflow-open-source">TutorFlow</a></h3>
+      <p>Full-stack tutoring-center operations platform covering scheduling, attendance, enrollment, billing, payments, and messaging.</p>
+      <sub>FastAPI · Next.js · PostgreSQL · Stripe</sub>
     </td>
   </tr>
 </table>
