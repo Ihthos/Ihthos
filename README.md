@@ -36,15 +36,10 @@
     </td>
   </tr>
   <tr>
-    <td width="50%" valign="top">
-      <h3><a href="https://github.com/Ihthos/potholeiq-api">potholeiq-api</a></h3>
-      <p>FastAPI backend for NYC pothole risk, reports, alerts, and civic data workflows.</p>
-      <sub>Python · 0 stars · 0 forks</sub>
-    </td>
-    <td width="50%" valign="top">
-      <h3><a href="https://github.com/Ihthos/potholeiq-frontend">potholeiq-frontend</a></h3>
-      <p>React + Vite interface for map and list exploration, filters, and API integration.</p>
-      <sub>TypeScript · 0 stars · 0 forks</sub>
+    <td colspan="2" valign="top">
+      <h3>PotholeIQ · <a href="https://github.com/Ihthos/potholeiq-api">API</a> + <a href="https://github.com/Ihthos/potholeiq-frontend">Frontend</a></h3>
+      <p>End-to-end civic data platform for NYC pothole risk, reports, alerts, map exploration, filters, and API-powered workflows.</p>
+      <sub>FastAPI · Python · React · TypeScript</sub>
     </td>
   </tr>
 </table>
