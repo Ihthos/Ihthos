@@ -8,7 +8,7 @@ import os
 import re
 import sys
 from collections import defaultdict
-from datetime import date
+from datetime import date, datetime, timezone
 from html import escape
 from html.parser import HTMLParser
 from pathlib import Path
@@ -92,7 +92,8 @@ def fetch_data() -> dict[str, object]:
         run = run + 1 if int(day["count"]) > 0 else 0
         longest = max(longest, run)
 
-    return {"username": USERNAME, "source": CONTRIBUTIONS_URL, "fetched_at": date.today().isoformat(), "total": total, "active_days": len(active_dates), "current_streak": current, "longest_streak": longest, "monthly": dict(sorted(monthly.items())), "days": [{"date": day["date"], "count": day["count"], "level": day["level"]} for day in days], "profile": fetch_profile_stats()}
+    snapshot_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    return {"username": USERNAME, "source": CONTRIBUTIONS_URL, "fetched_at": date.today().isoformat(), "snapshot_at": snapshot_at, "total": total, "active_days": len(active_dates), "current_streak": current, "longest_streak": longest, "monthly": dict(sorted(monthly.items())), "days": [{"date": day["date"], "count": day["count"], "level": day["level"]} for day in days], "profile": fetch_profile_stats()}
 
 
 def fetch_profile_stats() -> dict[str, int]:
@@ -157,14 +158,15 @@ def write_stats_card(payload: dict[str, object]) -> None:
         x = 22 + index * 197
         formatted = escape(f"{value:,}")
         cards.append(f'''<g transform="translate({x} 54)"><rect class="stat" width="178" height="92" rx="12"/><text x="18" y="35" class="number">{formatted}</text><text x="18" y="63" class="label">{escape(label)}</text></g>''')
+    snapshot = escape(str(payload.get("snapshot_at", "unknown")))
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="820" height="170" viewBox="0 0 820 170" role="img" aria-labelledby="title desc">
-  <title id="title">GitHub activity statistics for {USERNAME}</title><desc id="desc">Contribution, active-day, language, and years-active counts.</desc>
+  <title id="title">GitHub activity statistics for {USERNAME}</title><desc id="desc">Contribution, active-day, language, and years-active counts from the {snapshot} snapshot.</desc>
   <style>
     .frame {{ fill:#0d1117; stroke:#30363d; stroke-width:2; }} .eyebrow {{ fill:#8b949e; font:600 12px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:1px; }}
     .heading {{ fill:#f0f6fc; font:700 18px ui-monospace,SFMono-Regular,Menlo,monospace; }} .stat {{ fill:#161b22; stroke:#30363d; }}
     .number {{ fill:#f0f6fc; font:700 25px ui-monospace,SFMono-Regular,Menlo,monospace; }} .label {{ fill:#8b949e; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; }}
   </style>
-  <rect class="frame" x="1" y="1" width="818" height="168" rx="14"/><text x="22" y="27" class="eyebrow">PROFILE SNAPSHOT</text><text x="22" y="47" class="heading">A snapshot of the public work</text>{''.join(cards)}
+  <rect class="frame" x="1" y="1" width="818" height="168" rx="14"/><text x="22" y="27" class="eyebrow">PROFILE SNAPSHOT</text><text x="798" y="27" text-anchor="end" class="eyebrow">AS OF {snapshot[:10]} UTC</text><text x="22" y="47" class="heading">A snapshot of the public work</text>{''.join(cards)}
 </svg>
 '''
     (ROOT / "profile-stats.svg").write_text(svg, encoding="utf-8")
@@ -194,15 +196,16 @@ def write_language_card(payload: dict[str, object]) -> None:
         legend.append(f'<circle cx="180" cy="{y - 4}" r="4" fill="{color}"/><text x="193" y="{y}" class="lang">{escape(str(language.get("name", "Unknown")))}</text><text x="380" y="{y}" text-anchor="end" class="percent">{percentage}%</text>')
         offset += exact_percentage
 
+    snapshot = escape(str(payload.get("snapshot_at", "unknown")))
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="430" height="170" viewBox="0 0 430 170" role="img" aria-labelledby="title desc">
-  <title id="title">Languages used across public repositories</title><desc id="desc">Top programming languages by bytes in public repositories.</desc>
+  <title id="title">Languages used across public repositories</title><desc id="desc">Top programming languages by bytes in public repositories from the {snapshot} snapshot.</desc>
   <style>
     .frame {{ fill:#0d1117; stroke:#30363d; stroke-width:2; }} .label {{ fill:#8b949e; font:600 11px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:1px; }}
     .lang {{ fill:#f0f6fc; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; }} .percent {{ fill:#8b949e; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; }}
     .ring {{ transform:rotate(-90deg); transform-origin:72px 90px; }}
   </style>
   <rect class="frame" x="1" y="1" width="428" height="178" rx="12"/>
-  <g class="ring">{''.join(segments)}</g><text x="72" y="94" text-anchor="middle" class="label">TOP</text><text x="72" y="109" text-anchor="middle" class="label">LANGS</text>{''.join(legend)}
+  <g class="ring">{''.join(segments)}</g><text x="72" y="94" text-anchor="middle" class="label">TOP</text><text x="72" y="109" text-anchor="middle" class="label">LANGS</text>{''.join(legend)}<text x="380" y="166" text-anchor="end" class="percent">as of {snapshot[:10]} UTC</text>
 </svg>
 '''
     (ROOT / "language-card.svg").write_text(svg.replace('height="170" viewBox="0 0 430 170"', 'height="180" viewBox="0 0 430 180"'), encoding="utf-8")
@@ -252,6 +255,7 @@ def write_heatmap(payload: dict[str, object]) -> None:
 
     width, height = left + (max_column + 1) * (cell + gap) + 16, 154
     total = f'{int(payload["total"]):,}'
+    snapshot = escape(str(payload.get("snapshot_at", "unknown")))
     legend = ''.join(f'<rect x="{100 + i * 17}" y="135" width="12" height="12" rx="3" fill="{color}"/>' for i, color in enumerate(PALETTE))
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">
   <title id="title">{total} contributions in the last year</title><desc id="desc">A contribution calendar for GitHub user {USERNAME}.</desc>
@@ -259,7 +263,7 @@ def write_heatmap(payload: dict[str, object]) -> None:
     .frame {{ fill:#0d1117; stroke:#30363d; stroke-width:2; }} .heading {{ fill:#f0f6fc; font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace; }} .meta {{ fill:#8b949e; font:12px ui-monospace,SFMono-Regular,Menlo,monospace; }}
     .cell {{ opacity:0; transform-box:fill-box; transform-origin:center; animation:reveal .5s ease-out calc(var(--i) * 7ms) forwards; }} @keyframes reveal {{ from {{ opacity:0; transform:translateY(-5px) scale(.75); }} to {{ opacity:1; transform:translateY(0) scale(1); }} }}
   </style>
-  <rect class="frame" x="1" y="1" width="{width - 2}" height="{height - 2}" rx="12"/><text x="26" y="21" class="heading">{total} contributions in the last year</text>{''.join(cells)}
+  <rect class="frame" x="1" y="1" width="{width - 2}" height="{height - 2}" rx="12"/><text x="26" y="21" class="heading">{total} contributions in the last year</text><text x="{width - 26}" y="21" text-anchor="end" class="meta">as of {snapshot[:10]} UTC</text>{''.join(cells)}
   <text x="26" y="144" class="meta">less</text>{legend}<text x="210" y="144" class="meta">more</text>
 </svg>
 '''
