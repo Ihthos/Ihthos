@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="430" height="180" viewBox="0 0 430 180" role="img" aria-labelledby="title desc">
-  <title id="title">Languages used across public repositories</title><desc id="desc">Top programming languages by bytes in public repositories from the 2026-09-12T05:50:35Z snapshot.</desc>
+  <title id="title">Languages used across public repositories</title><desc id="desc">Top programming languages by bytes in public repositories from the 2026-09-12T10:50:54Z snapshot.</desc>
   <style>
     .frame { fill:#0d1117; stroke:#30363d; stroke-width:2; } .label { fill:#8b949e; font:600 11px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:1px; }
     .lang { fill:#f0f6fc; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; } .percent { fill:#8b949e; font:13px ui-monospace,SFMono-Regular,Menlo,monospace; }
